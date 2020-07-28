@@ -1,0 +1,34 @@
+{
+  "name": "agar-clone",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "bootstrap-vue": "^2.1.0",
+    "core-js": "3.6.5",
+    "vue": "2.6.11",
+    "vue-class-component": "7.2.4",
+    "vue-property-decorator": "8.5.1",
+    "vue-router": "3.3.4",
+    "vuex": "3.5.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "4.4.6",
+    "@vue/cli-plugin-typescript": "4.4.6",
+    "@vue/cli-service": "4.4.6",
+    "bootstrap": "^4.3.1",
+    "popper.js": "^1.16.0",
+    "portal-vue": "^2.1.6",
+    "sass": "1.26.10",
+    "sass-loader": "8.0.2",
+    "typescript": "~3.9.3",
+    "vue-cli-plugin-bootstrap-vue": "^0.6.0",
+    "vue-cli-plugin-pug": "^1.0.7",
+    "vue-socket.io": "^3.0.9",
+    "vue-template-compiler": "2.6.11"
+  }
+}

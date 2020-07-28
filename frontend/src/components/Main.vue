@@ -1,0 +1,253 @@
+<template lang="pug">
+  div
+    game-field(ref='gameField')
+    app-login-modal(ref="loginModal" @guest="onGuestLogin")
+    app-spawn-modal(
+      ref="spawnModal"
+      :player-name="playerName"
+      @solo="onSoloPlay"
+    )
+</template>
+
+<script>
+  import LoginModal from "@/components/LoginModal";
+  import SpawnModal from "@/components/SpawnModal";
+  import GameField from "@/components/GameField";
+  import io from 'socket.io-client';
+
+  export default {
+    name: "Main",
+    data() {
+      return {
+        playerName: '',
+      }
+    },
+    components: {
+      gameField: GameField,
+      appLoginModal: LoginModal,
+      appSpawnModal: SpawnModal,
+    },
+    mounted() {
+      this.$refs.loginModal.show();
+    },
+    methods: {
+      onGuestLogin(name) {
+        console.log('guest!', name)
+        this.playerName = name
+
+        this.$refs.loginModal.hide();
+        this.$refs.spawnModal.show();
+      },
+      onSoloPlay() {
+        this.$refs.spawnModal.hide();
+        this.$refs.gameField.init();
+
+      },
+    },
+  }
+</script>
+
+<style>
+  #game-field {
+    padding: 0;
+    position: relative;
+  }
+
+  #score-wrapper {
+    min-width: 120px;
+    background-color: white;
+    color: black;
+    font-size: 23px;
+    opacity: 0.7;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  #leader-board-wrapper {
+    min-width: 160px;
+    background-color: #800000;
+    color: white;
+    font-size: 18px;
+    opacity: 0.7;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 5px;
+  }
+
+  #leader-board {
+    padding: 5px;
+  }
+
+  #sort-wrapper {
+    margin-top: -20px;
+    font-size: 14px;
+  }
+
+  .sort-option {
+    padding: 3px 0;
+    width: 33.33%;
+    text-align: center;
+    float: left;
+    border-top: solid 2px black;
+  }
+
+  .sort-option:hover {
+    cursor: pointer;
+    background-color: #4d0000;
+  }
+
+  .active {
+    background-color: #4d0000;
+  }
+
+  #sort-orbs {
+    border-left: solid 2px black;
+    border-right: solid 2px black;
+  }
+
+  canvas {
+    display: block;
+    background-color: white;
+  }
+
+  .modal-sm {
+    min-width: 500px;
+    width: 30%;
+  }
+
+  .modal-content {
+    margin-top: 100px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+  }
+
+  .text-input {
+    font-size: 20px;
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
+    width: 90%;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .error-message {
+    font-size: 13px;
+    color: #e60000;
+  }
+
+  #join-team-btn, #play-solo-btn, #create-team-btn, #create-play-solo-btn, #add-team-btn {
+    width: 48%;
+    margin: 5px auto 15px;
+    font-size: 18px;
+    display: inline-block;
+    background-color: #00e6e6;
+    color: #FFFFFF;
+  }
+
+  #create-team-btn, #add-team-btn, #join-team-btn {
+    background-color: #00e600;
+  }
+
+  .stats-btn {
+    width: 48%;
+    margin: 0 auto 15px;
+    font-size: 18px;
+    display: inline-block;
+    background-color: #e600e6;
+    color: #FFFFFF;
+  }
+
+  #create-button {
+    font-size: 20px;
+    display: block;
+    margin: 5px auto 5px;
+    width: 90%;
+    background-color: #00e600;
+    color: #FFFFFF;
+  }
+
+  #playerStats-all-btn, #playerStats-player-btn {
+    font-size: 20px;
+    display: block;
+    margin: 5px auto 5px;
+    width: 90%;
+    background-color: #e600e6;
+    color: #FFFFFF;
+  }
+
+  .stats-btn-wrapper, .play-btn-wrapper {
+    width: 90%;
+    margin: auto;
+  }
+
+  .btn-wrapper {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .player-stats-btn, #join-team-btn, #create-team-btn, #add-team-btn {
+    float: left;
+  }
+
+  .all-stats-btn, #play-solo-btn, #create-play-solo-btn {
+    float: right;
+  }
+
+  .stats, .stat-number {
+    padding-top: 10px;
+    font-size: 20px;
+    width: 70%;
+    display: inline-block;
+  }
+
+  .stat-number {
+    width: 30%;
+    font-weight: bold;
+  }
+
+  .modal-footer {
+    clear: both;
+    text-align: left;
+  }
+
+  .player-stats {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .teams {
+    margin: 10px 0;
+  }
+
+  .join-button {
+    color: white;
+    background-color: #00e6e6;
+    margin-right: 10px;
+  }
+
+  .team {
+    font-size: 18px
+  }
+
+  #game-message-wrapper {
+    position: fixed;
+    width: 100%;
+    bottom: 20px;
+  }
+
+  #game-message {
+    display: table;
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 5px 15px;
+    color: white;
+    background-color: #e600e6;
+    margin: auto;
+    opacity: 0;
+  }
+</style>
