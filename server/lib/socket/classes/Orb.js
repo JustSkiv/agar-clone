@@ -1,9 +1,9 @@
 class Orb {
-  constructor() {
+  constructor(cfg) {
     this.color = this.getRandomColor();
-    this.locX = Math.floor(500 * Math.random());
-    this.locY = Math.floor(500 * Math.random());
-    this.radius = 5;
+    this.locX = Math.floor(cfg.worldWidth * Math.random());
+    this.locY = Math.floor(cfg.worldHeight * Math.random());
+    this.radius = cfg.size;
   }
 
   getRandomColor() {
