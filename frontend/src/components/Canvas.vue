@@ -11,40 +11,59 @@
     name: "Canvas",
     props: {
       background: String,
+      players: Array,
+      orbs: Array,
+      locX: Number,
+      locY: Number,
     },
     data() {
       return {
         player: {
           xVector: 0,
           yVector: 0,
-          locX: Math.floor(500 * Math.random() + 10),
-          locY: Math.floor(500 * Math.random() + 10),
-          orbs: [],
         },
       }
     },
     methods: {
+      start() {
+        setInterval(() => {
+          this.$emit('tick', {
+            xVector: this.player.xVector,
+            yVector: this.player.yVector,
+          })
+        }, 33) // 1000 / 33 = 30 FPS
+      },
       draw() {
-
+        this.prepareField()
+        this.drawPlayers()
+        this.drawOrbs()
+        requestAnimationFrame(this.draw)
+      },
+      prepareField() {
         this.ctx.setTransform(1, 0, 0, 1, 0, 0)
         this.ctx.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height)
 
-        const camX = -this.player.locX + this.$refs.canvas.width / 2
-        const camY = -this.player.locY + this.$refs.canvas.height / 2
+        const camX = -this.locX + this.$refs.canvas.width / 2
+        const camY = -this.locY + this.$refs.canvas.height / 2
         this.ctx.translate(camX, camY)
+      },
+      drawPlayers() {
+        if (this.players) {
+          this.players.forEach(p => {
+            this.ctx.beginPath();
 
-        this.ctx.beginPath();
+            this.ctx.fillStyle = p.color
 
-        this.ctx.fillStyle = 'rgb(255,100,100)'
+            this.ctx.arc(p.locX, p.locY, 10, 0, Math.PI * 2);
+            this.ctx.fill();
 
-        this.ctx.arc(this.player.locX, this.player.locY, 10, 0, Math.PI * 2);
-        // this.ctx.arc(200, 200, 10, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = 'rgb(50,255,50)'
-        this.ctx.stroke();
-
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeStyle = 'rgb(50,255,50)'
+            this.ctx.stroke();
+          })
+        }
+      },
+      drawOrbs() {
         if (this.orbs) {
           this.orbs.forEach(orb => {
             this.ctx.beginPath();
@@ -53,8 +72,6 @@
             this.ctx.fill();
           })
         }
-
-        requestAnimationFrame(this.draw)
       },
       onMouseMove(e) {
         const mousePosition = {
@@ -69,45 +86,24 @@
         let xVector, yVector;
 
         if (angleDeg >= 0 && angleDeg < 90) {
-          // console.log("lower right")
           xVector = 1 - (angleDeg / 90);
           yVector = -(angleDeg / 90);
         } else if (angleDeg >= 90 && angleDeg <= 180) {
-          // console.log("lower left")
           xVector = -(angleDeg - 90) / 90;
           yVector = -(1 - ((angleDeg - 90) / 90));
         } else if (angleDeg >= -180 && angleDeg < -90) {
-          // console.log("upper left")
           xVector = (angleDeg + 90) / 90;
           yVector = (1 + ((angleDeg + 90) / 90));
         } else if (angleDeg < 0 && angleDeg >= -90) {
-          // console.log("upper right")
           xVector = (angleDeg + 90) / 90;
           yVector = (1 - ((angleDeg + 90) / 90));
         }
 
-        const speed = 10
-        let xV = xVector;
-        let yV = yVector;
-
-        if ((this.player.locX < 5 && this.player.xVector < 0) || (this.player.locX > 500) && (xV > 0)) {
-          this.player.locY -= speed * yV;
-        } else if ((this.player.locY < 5 && yV > 0) || (this.player.locY > 500) && (yV < 0)) {
-          this.player.locX += speed * xV;
-        } else {
-          this.player.locX += speed * xV;
-          this.player.locY -= speed * yV;
-        }
-
-      },
-      setOrbs(data) {
-        console.log('got orbs', data.orbs.length)
-        this.orbs = data.orbs;
+        this.player.xVector = xVector;
+        this.player.yVector = yVector;
       },
     },
     mounted() {
-      console.log('rndX', this.rndX)
-
       let canvas = this.$refs.canvas
       this.ctx = this.$refs.canvas.getContext('2d');
       canvas.height = window.innerHeight
@@ -115,7 +111,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
