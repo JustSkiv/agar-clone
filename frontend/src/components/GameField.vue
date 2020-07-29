@@ -31,7 +31,9 @@
 
   export default {
     name: "GameField",
-    props: {},
+    props: {
+      playerName: String,
+    },
     data() {
       return {
         started: false,
@@ -45,12 +47,16 @@
       init() {
         this.socket = io.connect('http://localhost:8088')
 
-        this.socket.on('init', data => {
+        this.socket.on('initReturn', data => {
           console.log('init socket', data)
           this.$refs.canvas.setOrbs(data);
         })
 
         this.$refs.canvas.draw()
+
+        this.socket.emit('init', {
+          name: this.playerName
+        })
 
         this.started = true;
       },

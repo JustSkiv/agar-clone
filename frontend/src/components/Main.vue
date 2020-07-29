@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    game-field(ref='gameField')
+    game-field(ref='gameField' :playerName="playerName")
     app-login-modal(ref="loginModal" @guest="onGuestLogin")
     app-spawn-modal(
       ref="spawnModal"
