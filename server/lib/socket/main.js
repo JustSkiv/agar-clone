@@ -1,5 +1,8 @@
 const io = require('../../server').io
 
+const checkOrbCollisions = require('./collisions').checkForOrbCollisions
+const checkPlayerCollisions = require('./collisions').checkForPlayerCollisions
+
 const Player = require('./classes/Player')
 const PlayerData = require('./classes/PlayerData')
 const PlayerConfig = require('./classes/PlayerConfig')
