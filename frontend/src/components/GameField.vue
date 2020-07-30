@@ -58,7 +58,6 @@
 
         this.socket.on('initReturn', data => {
           console.log('init socket', data)
-          // this.$refs.canvas.setOrbs(orbs);
           this.orbs = data.orbs;
           this.$refs.canvas.start();
         })

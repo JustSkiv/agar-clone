@@ -10,7 +10,7 @@ let players = []
 
 let cfg = {
   orbs: 10,
-  speed: 6,
+  speed: 12,
   size: 6,
   zoom: 1.5,
   worldWidth: 500,
@@ -32,10 +32,11 @@ io.on('connect', (socket) => {
     player = new Player(socket.id, playerConfig, playerData);
 
     setInterval(() => {
-      io.to('game').emit('tock', {
+      socket.emit('tock', {
         players,
         locX: player.data.locX,
         locY: player.data.locY,
+        name: player.data.name
       })
     }, 33); // 1000 / 33 = 30 FPS
 
@@ -49,6 +50,7 @@ io.on('connect', (socket) => {
     if (!player) {
       return
     }
+
     console.log('tick', data)
 
     const speed = player.config.speed;
@@ -56,12 +58,10 @@ io.on('connect', (socket) => {
     let xV = player.config.xVector = data.xVector;
     let yV = player.config.yVector = data.yVector;
 
-    if ((player.data.locX < 5 && xV < 0) || (player.data.locX > 500) && (xV > 0)) {
-      player.data.locY -= speed * yV;
-    } else if ((player.data.locY < 5 && yV > 0) || (player.data.locY > 500) && (yV < 0)) {
+    if ((player.data.locX > 5 && xV < 0) || (player.data.locX < 500) && (xV > 0)) {
       player.data.locX += speed * xV;
-    } else {
-      player.data.locX += speed * xV;
+    }
+    if ((player.data.locY > 5 && yV > 0) || (player.data.locY < 500) && (yV < 0)) {
       player.data.locY -= speed * yV;
     }
   })
