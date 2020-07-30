@@ -11,16 +11,27 @@ const Orb = require('./classes/Orb')
 let orbs = []
 let players = []
 
+const worldSize = 500
+
 let cfg = {
-  orbs: 10,
-  speed: 12,
+  orbs: 100,
+  speed: 8,
   size: 6,
   zoom: 1.5,
-  worldWidth: 500,
-  worldHeight: 500,
+  worldWidth: worldSize,
+  worldHeight: worldSize,
 }
 
 initGame();
+
+setInterval(() => {
+  if (!players || players.length === 0) {
+    return
+  }
+  io.emit('generalData', {
+    players,
+  })
+}, 33); // 1000 / 33 = 30 FPS
 
 io.on('connect', (socket) => {
 
@@ -35,11 +46,9 @@ io.on('connect', (socket) => {
     player = new Player(socket.id, playerConfig, playerData);
 
     setInterval(() => {
-      socket.emit('tock', {
-        players,
+      socket.emit('ownData', {
         locX: player.data.locX,
         locY: player.data.locY,
-        name: player.data.name
       })
     }, 33); // 1000 / 33 = 30 FPS
 
@@ -54,19 +63,38 @@ io.on('connect', (socket) => {
       return
     }
 
-    console.log('tick', data)
-
     const speed = player.config.speed;
 
     let xV = player.config.xVector = data.xVector;
     let yV = player.config.yVector = data.yVector;
 
-    if ((player.data.locX > 5 && xV < 0) || (player.data.locX < 500) && (xV > 0)) {
+    if ((player.data.locX > 5 && xV < 0) || (player.data.locX < cfg.worldWidth) && (xV > 0)) {
       player.data.locX += speed * xV;
     }
-    if ((player.data.locY > 5 && yV > 0) || (player.data.locY < 500) && (yV < 0)) {
+    if ((player.data.locY > 5 && yV > 0) || (player.data.locY < cfg.worldHeight) && (yV < 0)) {
       player.data.locY -= speed * yV;
     }
+
+    // Orb collision
+    let capturedOrb = checkOrbCollisions(player.data, player.config, orbs, cfg)
+    capturedOrb.then(data => {
+      const orbData = {
+        index: data,
+        newOrb: orbs[data]
+      }
+      io.sockets.emit('orbSwitch', orbData)
+    }).catch(() => {
+
+    })
+
+    // Player collision
+    let playerDeath = checkPlayerCollisions(player.data, player.config, players, player.socketId)
+    playerDeath.then(data => {
+
+    }).catch(() => {
+
+    })
+
   })
 })
 

@@ -9,6 +9,7 @@
         :locX="locX"
         :locY="locY"
         @tick="onTick"
+        @performance="onPerformance"
       )
       #score-wrapper(v-show="started")
         div
@@ -47,12 +48,17 @@
         orbs: [],
         locX: 0,
         locY: 0,
+
+        performance: null,
       }
     },
     components: {
       appCanvas: Canvas,
     },
     methods: {
+      onPerformance(data) {
+        this.performance = data
+      },
       init() {
         this.socket = io.connect('http://localhost:8088')
 
@@ -62,8 +68,10 @@
           this.$refs.canvas.start();
         })
 
-        this.socket.on('tock', data => {
+        this.socket.on('generalData', data => {
           this.players = data.players
+        })
+        this.socket.on('ownData', data => {
           this.locX = data.locX
           this.locY = data.locY
         })
@@ -73,6 +81,11 @@
         this.socket.emit('init', {
           name: this.playerName
         })
+
+        this.socket.on('orbSwitch', orbData => {
+          // console.log('got orb!', data)
+          this.orbs.splice(orbData.index, 1, orbData.newOrb);
+        });
 
         this.started = true;
       },

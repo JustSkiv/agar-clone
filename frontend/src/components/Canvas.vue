@@ -1,9 +1,10 @@
 <template lang="pug">
-  canvas(
-    ref="canvas"
-    :style="'background: url(' + background + ')'"
-    @mousemove="onMouseMove"
-  )
+  span
+    canvas(
+      ref="canvas"
+      :style="'background: url(' + background + ')'"
+      @mousemove="onMouseMove"
+    )
 </template>
 
 <script>
@@ -37,6 +38,8 @@
         this.prepareField()
         this.drawPlayers()
         this.drawOrbs()
+
+        // this.$emit('performance', performance.now())
         requestAnimationFrame(this.draw)
       },
       prepareField() {
@@ -54,7 +57,7 @@
 
             this.ctx.fillStyle = p.color
 
-            this.ctx.arc(p.locX, p.locY, 10, 0, Math.PI * 2);
+            this.ctx.arc(p.locX, p.locY, p.radius, 0, Math.PI * 2);
             this.ctx.fill();
 
             this.ctx.lineWidth = 3;
