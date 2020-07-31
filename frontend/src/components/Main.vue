@@ -233,21 +233,4 @@
   .team {
     font-size: 18px
   }
-
-  #game-message-wrapper {
-    position: fixed;
-    width: 100%;
-    bottom: 20px;
-  }
-
-  #game-message {
-    display: table;
-    font-size: 20px;
-    border-radius: 5px;
-    padding: 5px 15px;
-    color: white;
-    background-color: #e600e6;
-    margin: auto;
-    opacity: 0;
-  }
 </style>

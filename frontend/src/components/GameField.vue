@@ -20,7 +20,7 @@
           h3.text-center Leaders
           hr
           ol.leader-board
-            li.leaderboard-player
+            li.leaderboard-player(v-for="info in leaderBoard") {{info.name}}: {{info.score}}
           hr
         #sort-wrapper
           #sort-header.text-center SORT BY
@@ -48,6 +48,7 @@
         orbs: [],
         locX: 0,
         locY: 0,
+        leaderBoard: {},
 
         performance: null,
       }
@@ -83,8 +84,15 @@
         })
 
         this.socket.on('orbSwitch', orbData => {
-          // console.log('got orb!', data)
           this.orbs.splice(orbData.index, 1, orbData.newOrb);
+        });
+
+        this.socket.on('updateLeaderBoard', data => {
+          this.leaderBoard = data;
+        });
+
+        this.socket.on('playerDeath', data => {
+          console.log('Player death', data.died.name, data.killedBy.name);
         });
 
         this.started = true;
@@ -97,5 +105,19 @@
 </script>
 
 <style scoped>
+  #game-message-wrapper {
+    position: fixed;
+    width: 100%;
+    bottom: 20px;
+  }
 
+  #game-message {
+    display: table;
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 5px 15px;
+    color: white;
+    background-color: #0121a7;
+    margin: auto;
+  }
 </style>
