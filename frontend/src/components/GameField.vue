@@ -27,8 +27,9 @@
           #sort-score.sort-option.active Score
           #sort-orbs.sort-option Orbs
           #sort-players.sort-option Players
-      #game-message-wrapper
-        #game-message gameMessage
+      transition(name="fade")
+        #game-message-wrapper(v-show="showGameMsg" )
+          #game-message {{gameMsg}}
 </template>
 
 <script>
@@ -50,16 +51,14 @@
         locY: 0,
         leaderBoard: {},
 
-        performance: null,
+        showGameMsg: false,
+        gameMsg: "",
       }
     },
     components: {
       appCanvas: Canvas,
     },
     methods: {
-      onPerformance(data) {
-        this.performance = data
-      },
       init() {
         this.socket = io.connect('http://localhost:8088')
 
@@ -93,6 +92,12 @@
 
         this.socket.on('playerDeath', data => {
           console.log('Player death', data.died.name, data.killedBy.name);
+
+          this.gameMsg = `${data.killedBy.name} РАЗОРВАЛ ${data.died.name}`;
+          this.showGameMsg = true;
+          setTimeout(() => {
+            this.showGameMsg = false;
+          }, 4000)
         });
 
         this.started = true;
@@ -119,5 +124,13 @@
     color: white;
     background-color: #0121a7;
     margin: auto;
+  }
+
+  .fade-leave-active {
+    transition: opacity .5s;
+  }
+
+  .fade-leave-to {
+    opacity: 0;
   }
 </style>
