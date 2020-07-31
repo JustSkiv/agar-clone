@@ -9,7 +9,6 @@
         :locX="locX"
         :locY="locY"
         @tick="onTick"
-        @performance="onPerformance"
       )
       #score-wrapper(v-show="started")
         div
@@ -59,7 +58,7 @@
       appCanvas: Canvas,
     },
     methods: {
-      init() {
+      init(name) {
         this.socket = io.connect('http://localhost:8088')
 
         this.socket.on('initReturn', data => {
@@ -79,7 +78,7 @@
         this.$refs.canvas.draw()
 
         this.socket.emit('init', {
-          name: this.playerName
+          name: name
         })
 
         this.socket.on('orbSwitch', orbData => {

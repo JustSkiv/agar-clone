@@ -36,12 +36,13 @@
         this.playerName = name
 
         this.$refs.loginModal.hide();
-        this.$refs.spawnModal.show();
+        // this.$refs.spawnModal.show();
+
+        this.$refs.gameField.init(name);
       },
       onSoloPlay() {
         this.$refs.spawnModal.hide();
         this.$refs.gameField.init();
-
       },
     },
   }

@@ -8,16 +8,17 @@
   )
     template(v-slot:modal-title)
       h2.modal-title.text-center Agar Clone
-    button.btn.play-button.btn-github(type='submit') Login with github
+    button.btn.play-button.btn-github(type='submit' v-if="false" ) Login with github
     form.name-form
       .text-center.error-message
-      button.btn.play-button.play-guest(@click='onGuestClick') Play as Guest
       input#name-input.text-input.text-center.form-control(
         type='text'
         v-model="guest"
         placeholder = 'Enter your name here'
         required
+        autocomplete="off"
       )
+      button.btn.play-button.play-guest(@click='onGuestClick') Play!
     template(v-slot:modal-footer)
       #instructions
         label#how-to-play How to play:
@@ -46,7 +47,9 @@
       },
       onGuestClick(e) {
         e.preventDefault();
-        this.$emit('guest', this.guest)
+        if (this.guest) {
+          this.$emit('guest', this.guest)
+        }
       }
     },
   }
@@ -58,7 +61,7 @@
     display: block;
     margin: 5px auto 5px;
     width: 90%;
-    background-color: #00e6e6;
+    background-color: #177bf3;
     color: #FFFFFF;
   }
 
