@@ -71,6 +71,8 @@
           this.players = data.players
         })
         this.socket.on('ownData', data => {
+          this.players = data.players
+
           this.locX = data.locX
           this.locY = data.locY
           this.score = data.score

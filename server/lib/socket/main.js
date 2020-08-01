@@ -11,10 +11,12 @@ const Orb = require('./classes/Orb')
 let orbs = []
 let players = []
 
-const worldSize = 500
+const worldSize = 3000
+
+const fps = 60;
 
 let cfg = {
-  orbs: 100,
+  orbs: 3000,
   speed: 8,
   size: 6,
   zoom: 1.5,
@@ -23,15 +25,6 @@ let cfg = {
 }
 
 initGame();
-
-setInterval(() => {
-  if (!players || players.length === 0) {
-    return
-  }
-  io.emit('generalData', {
-    players,
-  })
-}, 33); // 1000 / 33 = 30 FPS
 
 io.on('connect', (socket) => {
 
@@ -48,12 +41,17 @@ io.on('connect', (socket) => {
     player = new Player(socket.id, playerConfig, playerData);
 
     setInterval(() => {
+      if (!players || players.length === 0) {
+        return
+      }
+
       socket.emit('ownData', {
+        players,
         locX: player.data.locX,
         locY: player.data.locY,
         score: player.data.score,
       })
-    }, 33); // 1000 / 33 = 30 FPS
+    }, getGameInterval(fps));
 
     socket.emit('initReturn', {
       orbs
@@ -120,6 +118,10 @@ function getLeaderBoard() {
       score: p.score
     }
   });
+}
+
+function getGameInterval(fps) {
+  return 1000 / fps;
 }
 
 function initGame() {
