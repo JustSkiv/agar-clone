@@ -51,6 +51,7 @@ io.on('connect', (socket) => {
       socket.emit('ownData', {
         locX: player.data.locX,
         locY: player.data.locY,
+        score: player.data.score,
       })
     }, 33); // 1000 / 33 = 30 FPS
 

@@ -12,8 +12,7 @@
       )
       #score-wrapper(v-show="started")
         div
-          | Score:
-          span.player-score
+          | Score: {{score}}
       #leader-board-wrapper(v-show="started")
         #leader-board
           h3.text-center Leaders
@@ -49,6 +48,7 @@
         locX: 0,
         locY: 0,
         leaderBoard: {},
+        score: 0,
 
         showGameMsg: false,
         gameMsg: "",
@@ -59,7 +59,7 @@
     },
     methods: {
       init(name) {
-        this.socket = io.connect('http://localhost:8088')
+        this.socket = io.connect(process.env.VUE_APP_BACKEND_URL)
 
         this.socket.on('initReturn', data => {
           console.log('init socket', data)
@@ -73,6 +73,7 @@
         this.socket.on('ownData', data => {
           this.locX = data.locX
           this.locY = data.locY
+          this.score = data.score
         })
 
         this.$refs.canvas.draw()
